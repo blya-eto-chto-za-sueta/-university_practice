@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int* deleting_copies(int* arr, int size, int* idx){
+
+    int* newArr=(int*)malloc(sizeof(int));
+
+    newArr[*idx]=arr[0];
+
+    for (int j=1;j<size;j++){
+        if (arr[j]!=arr[j-1]){
+            (*idx)++;
+            newArr=(int*)realloc(newArr, (*idx+1)*sizeof(int));
+            newArr[*idx]=arr[j];
+        }
+    }
+
+    (*idx)++;// чтобы idx оказывал количество элементов
+    return newArr;
+
+}
+
+void merge(int* arr, int first, int last){
+    int LIdx, RIdx , mid;
+    int* buffer=(int*)malloc((last-first+1)*sizeof (int));
+
+    mid=(first+last)/2;
+    LIdx= first;
+    RIdx=mid+1;
+
+    for(int i =first; i<=last; i++){
+        if((LIdx<=mid)&&((RIdx>last)||(arr[LIdx]<arr[RIdx]))){
+            buffer[i-first]= arr[LIdx];
+            LIdx++;
+        }
+        else{
+            buffer[i-first]= arr[RIdx];
+            RIdx++;
+        }
+    }
+    for(int i = first; i<= last; i++){
+        arr[i]= buffer[i-first];
+    }
+}
+
+void mergeSort(int* arr, int start, int end){
+    if(start<end){
+        mergeSort (arr,start,(start+end)/2);
+        mergeSort (arr,(start+end)/2+1,end);
+
+        merge(arr,start,end);
+    }
+}
+
+int main() {
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+
+    int N;
+    scanf("%d", &N);
+
+    int *aArray = (int *) malloc(N * sizeof(int));
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &aArray[i]);
+    }
+
+    mergeSort(aArray, 0, N - 1);
+
+    int count = 0;// counter of various elements
+
+    int* newArr=deleting_copies(aArray, N, &count);
+    printf("%d\n",count);
+    for(int j=0;j<count;j++){
+        printf("%d\n",newArr[j]);
+    }
+
+    return 0;
+}
