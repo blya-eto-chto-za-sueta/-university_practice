@@ -15,7 +15,7 @@ int* deleting_copies(int* arr, int size, int* idx){
         }
     }
 
-    (*idx)++;// чтобы idx оказывал количество элементов
+    (*idx)++;// теперь idx показывает количество элементов
     return newArr;
 
 }
