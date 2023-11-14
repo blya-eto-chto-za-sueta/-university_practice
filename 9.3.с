@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+long long sum_min(const int* arr, int size){
+    long long sum=0;
+    for (int j=0;j<size;j++){
+        sum+=(long long)arr[j]*(long long)(size-j-1);
+    }
+    return sum;
+}
+
+void merge(int* arr, int first, int last){
+    int LIdx, RIdx , mid;
+    int* buffer=(int*)malloc((last-first+1)*sizeof (int));
+
+    mid=(first+last)/2;
+    LIdx= first;
+    RIdx=mid+1;
+
+    for(int i =first; i<=last; i++){
+        if((LIdx<=mid)&&((RIdx>last)||(arr[LIdx]<arr[RIdx]))){
+            buffer[i-first]= arr[LIdx];
+            LIdx++;
+        }
+        else{
+            buffer[i-first]= arr[RIdx];
+            RIdx++;
+        }
+    }
+    for(int i = first; i<= last; i++){
+        arr[i]= buffer[i-first];
+    }
+}
+
+void mergeSort(int* arr, int start, int end){
+    if(start<end){
+        mergeSort (arr,start,(start+end)/2);
+        mergeSort (arr,(start+end)/2+1,end);
+
+        merge(arr,start,end);
+    }
+}
+
+int main(){
+    freopen("input.txt","r",stdin);
+    freopen("output.txt", "w", stdout);
+
+    int N;
+    scanf("%d",&N);
+
+    int* aArray= (int*)malloc(N*sizeof(int));
+    for (int i=0;i<N;i++){
+        scanf("%d",&aArray[i]);
+    }
+
+    mergeSort(aArray,0,N-1);
+
+    long long res;
+    res=sum_min(aArray,N);
+    printf("%lld",res);
+}
