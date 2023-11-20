@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int partition( int* a, int n, int pivot){
+    /*создадим два массива : 1) слева от pivot
+                             2) справа от pivot*/
+    int leftCount=0, rightCount=0, leftPivot=0, rightPivot=0, res;
+    /* leftCount, rightCount - количество элементов меньше/больше заданного,
+    liftPivot, rightPivot - количество элементов равных заданному в разных массиваx*/
+
+    int* leftArr=(int*)malloc(n * sizeof (int));
+    int* rightArr=(int*)malloc(n *sizeof (int));
+
+    for(int j =0; j<n; j++ ){
+
+        if (a[j]!=pivot){
+            if (a[j]<pivot){
+                leftArr[leftCount]=a[j];
+                leftCount++;
+            }
+            else{
+                rightArr[rightCount]=a[j];
+                rightCount++;
+            }
+        }
+        else{
+            if (leftPivot > rightPivot){
+                rightArr[rightCount]=a[j];
+                rightCount++;
+                rightPivot++;
+
+            }
+            else{
+                leftArr[leftCount]=a[j];
+                leftCount++;
+                leftPivot++;
+            }
+        }
+    }
+    res=leftCount;
+
+    int leftIdx=0, rightIdx=0;
+    for(int j=0; j<n; j++){
+        if (leftCount!=0){
+            a[j]=leftArr[leftIdx];
+            leftIdx++;
+            leftCount--;
+        }
+        else{
+            a[j]=rightArr[rightIdx];
+            rightIdx++;
+            rightCount--;
+        }
+    }
+    return res;
+}
+
+int main(){
+    FILE* fin = fopen("input.txt","rb");
+    FILE* fout = fopen ("output.txt","wb");
+
+    int N, pivot;//N-ammount numb in Array, p- pivot element
+    fread(&N, sizeof (int), 1, fin);
+    fread(&pivot, sizeof(int), 1, fin);
+
+    int* arr = (int*)malloc(N*sizeof (int));
+    fread(arr, sizeof(int), N, fin);
+
+    int leftCount = partition(arr,N, pivot );
+    fwrite(&leftCount, sizeof(int), 1,  fout);
+    fwrite(arr, sizeof(int), N, fout);
+    return 0;
+}
