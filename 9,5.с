@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void quick_sort (int* arr, int j){
+    int size=j;// array size
+    int k=0;
+    int c=arr[(int)(j/2)];
+    int tmp ;// buffer
+    j--;
+    do{
+        while (arr[k]<c) k++;
+        while(arr[j]>c) j--;
+
+            if (k<=j){
+                tmp=arr[k];
+                arr[k]=arr[j];
+                arr[j]=tmp;
+                k++;
+                j--;
+            }
+    }while(k<=j);
+    if(j>0) quick_sort(arr,j+1);
+    if (size>k) quick_sort(&arr[k],size-k);
+}
+
+int main(){
+    FILE* fin = fopen("input.txt","rb");
+    FILE* fout = fopen ("output.txt","wb");
+
+    int N;
+    fread(&N, sizeof(int),1,fin);
+
+    int* aArray= (int*)malloc(N*sizeof(int));
+    fread(aArray,sizeof(int),N, fin);
+
+    quick_sort (aArray, N);
+
+    fwrite(aArray,sizeof(int),N,fout);
+}
