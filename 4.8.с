@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int LengthDetermination( int n){
+    int len=0;
+    while (n>0){
+        n/=10;
+        len++;
+    }
+    return len;
+}
+
+void OutSpecialStr (const int* lenIdx, const int* lenCountFrag, const int* lenTime){
+    printf("+");
+
+    for (int j=0; j< *lenIdx+2;j++){
+        printf("-");
+    }
+    printf("+");
+    for (int j=0; j< *lenCountFrag+2;j++){
+        printf("-");
+    }
+    printf("+");
+    for (int j=0; j< *lenTime+2;j++){
+        printf("-");
+    }
+    printf("+\n");
+}
+
+
+void OutMeaning(int idx, int countFrag, int time ,const int* maxLenIdx, const int* maxLenCountFrag, const int* maxLenTime){
+    int lenIdx= LengthDetermination(idx);
+    int lenCountFrag= LengthDetermination(countFrag);
+    int lenTime= LengthDetermination(time);
+
+    printf("| ");
+    for (int j =0; j< *maxLenIdx- lenIdx; j++){
+        printf(" ");
+    }
+    printf("%d",idx);
+    printf(" | ");
+    for (int j =0; j< *maxLenCountFrag- lenCountFrag; j++){
+        printf(" ");
+    }
+    printf("%d",countFrag);
+    printf(" | ");
+    for (int j =0; j< *maxLenTime- lenTime; j++){
+        printf(" ");
+    }
+    printf("%d",time);
+    printf(" |\n");
+
+}
+
+int main(){
+    freopen("input.txt","r",stdin);
+    freopen("output.txt", "w", stdout);
+
+    int* timeArr = (int*)calloc(1001, sizeof(int));// массив для хранения суммарного времени видео
+    int* fragArr = (int*)calloc(1001,sizeof (int));// массив для хранения количества фрагментов
+    int maxIdx=0, maxTime=0, maxCountFrag=0;
+
+    int N;
+    scanf("%d",&N);
+    for(int j=0; j<N; j++){
+        int tempIdx, tempTime;
+        scanf("%d %d", &tempIdx, &tempTime);
+        timeArr[tempIdx]+=tempTime;
+        fragArr[tempIdx]+=1;
+
+        if (tempIdx>maxIdx){
+            maxIdx=tempIdx;
+        }
+        if (timeArr[tempIdx]>maxTime){
+            maxTime=timeArr[tempIdx];
+        }
+        if (fragArr[tempIdx]>maxCountFrag){
+            maxCountFrag=fragArr[tempIdx];
+        }
+    }
+
+    int maxLenIdx=0, maxLenCountFrag=0, maxLenTime=0;
+    maxLenIdx = LengthDetermination(maxIdx);
+    maxLenCountFrag = LengthDetermination(maxCountFrag);
+    maxLenTime = LengthDetermination(maxTime);
+
+
+    for (int j=0; j<1001; j++){
+        if (fragArr[j]!=0){
+            OutSpecialStr(&maxLenIdx,&maxLenCountFrag,&maxLenTime);
+            OutMeaning(j,fragArr[j],timeArr[j],&maxLenIdx,&maxLenCountFrag, &maxLenTime);
+        }
+    }
+    OutSpecialStr(&maxLenIdx,&maxLenCountFrag,&maxLenTime);
+
+    fclose(stdin);
+    fclose(stdout);
+
+}
